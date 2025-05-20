@@ -1,70 +1,166 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/app/lib/AuthContext";
+import { useRouter } from "next/navigation";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
+import { createCommunity, getAllCommunities } from "@/app/lib/firebase-utils";
+import { Community } from "@/app/types";
+import toast from "react-hot-toast";
 
-// Mock data for communities
-const mockCommunities = [
-  {
-    id: "1",
-    name: "Web Development",
-    description:
-      "A community for web developers to share knowledge and experiences",
-    memberCount: 1234,
-    imageUrl:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2072&q=80",
-  },
-  {
-    id: "2",
-    name: "Design Enthusiasts",
-    description: "Share and discuss design trends, tools, and inspiration",
-    memberCount: 856,
-    imageUrl:
-      "https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2064&q=80",
-  },
-  {
-    id: "3",
-    name: "Startup Founders",
-    description: "Connect with other founders and share your startup journey",
-    memberCount: 567,
-    imageUrl:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
-  },
-];
-
-export default function Communities() {
+export default function CommunitiesPage() {
   const { user } = useAuth();
-  const [communities] = useState(mockCommunities);
+  const router = useRouter();
+  const [communities, setCommunities] = useState<Community[]>([]);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [newCommunity, setNewCommunity] = useState({
+    name: "",
+    description: "",
+  });
+
+  useEffect(() => {
+    loadCommunities();
+  }, []);
+
+  const loadCommunities = async () => {
+    try {
+      const communitiesData = await getAllCommunities();
+      setCommunities(communitiesData);
+    } catch (error) {
+      console.error("Error loading communities:", error);
+      toast.error("Failed to load communities");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCreateCommunity = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    try {
+      const community = await createCommunity(
+        newCommunity.name,
+        newCommunity.description,
+        user.uid
+      );
+      setCommunities([community, ...communities]);
+      setIsCreating(false);
+      setNewCommunity({ name: "", description: "" });
+      toast.success("Community created successfully!");
+    } catch (error) {
+      console.error("Error creating community:", error);
+      toast.error("Failed to create community");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-semibold text-gray-900">Communities</h1>
-          <Link
-            href="/dashboard/communities/new"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-            Create Community
-          </Link>
-        </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-semibold text-gray-900">Communities</h1>
+        <button
+          onClick={() => setIsCreating(true)}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <PlusIcon className="h-5 w-5 mr-2" />
+          Create Community
+        </button>
+      </div>
 
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {communities.map((community) => (
+      {isCreating && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-lg font-medium mb-4">Create New Community</h2>
+            <form onSubmit={handleCreateCommunity}>
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={newCommunity.name}
+                    onChange={(e) =>
+                      setNewCommunity({ ...newCommunity, name: e.target.value })
+                    }
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="description"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="description"
+                    value={newCommunity.description}
+                    onChange={(e) =>
+                      setNewCommunity({
+                        ...newCommunity,
+                        description: e.target.value,
+                      })
+                    }
+                    rows={3}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setIsCreating(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Create
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {communities.length === 0 ? (
+          <div className="col-span-full text-center py-12">
+            <h3 className="mt-2 text-sm font-semibold text-gray-900">
+              No communities
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Get started by creating a new community.
+            </p>
+          </div>
+        ) : (
+          communities.map((community) => (
             <div
               key={community.id}
-              className="bg-white overflow-hidden shadow rounded-lg"
+              className="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() =>
+                router.push(`/dashboard/communities/${community.id}`)
+              }
             >
-              <div className="relative h-48">
-                <img
-                  src={community.imageUrl}
-                  alt={community.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
               <div className="p-6">
                 <h3 className="text-lg font-medium text-gray-900">
                   {community.name}
@@ -72,23 +168,13 @@ export default function Communities() {
                 <p className="mt-2 text-sm text-gray-500">
                   {community.description}
                 </p>
-                <div className="mt-4">
-                  <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
-                    {community.memberCount} members
-                  </span>
-                </div>
-                <div className="mt-6">
-                  <Link
-                    href={`/dashboard/communities/${community.id}`}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    View Community
-                  </Link>
+                <div className="mt-4 flex items-center text-sm text-gray-500">
+                  <span>{community.members.length} members</span>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          ))
+        )}
       </div>
     </div>
   );
