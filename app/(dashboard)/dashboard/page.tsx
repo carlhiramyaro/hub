@@ -35,7 +35,7 @@ export default function Dashboard() {
   return (
     <div className="py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold text-primary">
           Welcome back, {user?.displayName || "there"}!
         </h1>
       </div>
@@ -47,24 +47,24 @@ export default function Dashboard() {
                 <Link
                   key={action.name}
                   href={action.href}
-                  className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg shadow hover:shadow-md transition-shadow"
+                  className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary rounded-lg shadow hover:shadow-md transition-all"
                 >
                   <div>
-                    <span className="rounded-lg inline-flex p-3 bg-indigo-50 text-indigo-700 ring-4 ring-white">
+                    <span className="rounded-lg inline-flex p-3 bg-primary/10 text-primary ring-4 ring-white">
                       <action.icon className="h-6 w-6" aria-hidden="true" />
                     </span>
                   </div>
                   <div className="mt-8">
-                    <h3 className="text-lg font-medium">
+                    <h3 className="text-lg font-medium text-primary">
                       <span className="absolute inset-0" aria-hidden="true" />
                       {action.name}
                     </h3>
-                    <p className="mt-2 text-sm text-gray-500">
+                    <p className="mt-2 text-sm text-muted">
                       {action.description}
                     </p>
                   </div>
                   <span
-                    className="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-gray-400"
+                    className="pointer-events-none absolute top-6 right-6 text-muted group-hover:text-primary transition-colors"
                     aria-hidden="true"
                   >
                     <svg

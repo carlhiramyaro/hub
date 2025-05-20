@@ -66,10 +66,10 @@ export default function CommunitiesPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">Communities</h1>
+        <h1 className="text-2xl font-semibold text-primary">Communities</h1>
         <button
           onClick={() => setIsCreating(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
         >
           <PlusIcon className="h-5 w-5 mr-2" />
           Create Community
@@ -79,36 +79,41 @@ export default function CommunitiesPage() {
       {isCreating && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-lg font-medium mb-4">Create New Community</h2>
+            <h2 className="text-lg font-medium text-primary mb-4">
+              Create New Community
+            </h2>
             <form onSubmit={handleCreateCommunity}>
               <div className="space-y-4">
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-foreground"
                   >
                     Name
                   </label>
                   <input
                     type="text"
+                    name="name"
                     id="name"
                     value={newCommunity.name}
                     onChange={(e) =>
                       setNewCommunity({ ...newCommunity, name: e.target.value })
                     }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm text-foreground placeholder:text-muted"
                     required
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="description"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-foreground"
                   >
                     Description
                   </label>
                   <textarea
                     id="description"
+                    name="description"
+                    rows={3}
                     value={newCommunity.description}
                     onChange={(e) =>
                       setNewCommunity({
@@ -116,8 +121,7 @@ export default function CommunitiesPage() {
                         description: e.target.value,
                       })
                     }
-                    rows={3}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm text-foreground placeholder:text-muted"
                     required
                   />
                 </div>
@@ -126,13 +130,13 @@ export default function CommunitiesPage() {
                 <button
                   type="button"
                   onClick={() => setIsCreating(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="px-4 py-2 text-sm font-medium text-muted bg-white border border-gray-300 rounded-md shadow-sm hover:text-primary hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                 >
                   Create
                 </button>

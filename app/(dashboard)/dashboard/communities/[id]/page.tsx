@@ -179,13 +179,15 @@ export default function CommunityPage({
       {isCreatingPost && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-lg font-medium mb-4">Create New Post</h2>
+            <h2 className="text-lg font-medium mb-4 text-primary">
+              Create New Post
+            </h2>
             <form onSubmit={handleCreatePost}>
               <div className="space-y-4">
                 <div>
                   <label
                     htmlFor="content"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-base font-semibold text-primary"
                   >
                     Content
                   </label>
@@ -194,7 +196,7 @@ export default function CommunityPage({
                     value={newPost.content}
                     onChange={(e) => setNewPost({ content: e.target.value })}
                     rows={4}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm text-primary placeholder:text-muted"
                     required
                   />
                 </div>

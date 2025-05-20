@@ -61,13 +61,13 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-blue-600">
+                <h1 className="text-xl font-bold text-primary">
                   Community Hub
                 </h1>
               </div>
@@ -76,7 +76,7 @@ export default function DashboardLayout({
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900"
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-muted hover:text-primary transition-colors"
                   >
                     <item.icon className="h-5 w-5 mr-2" />
                     {item.name}
@@ -87,7 +87,7 @@ export default function DashboardLayout({
             <div className="flex items-center">
               <button
                 onClick={handleSignOut}
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-muted bg-white hover:text-primary hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
               >
                 <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-2" />
                 Sign out
